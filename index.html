@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    
+    <style>
+       
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-image: url('https://i.pinimg.com/originals/3d/38/4d/3d384d829dbf4b678cfea617114e149d.jpg');
+            color: #fff;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .weather-info {
+            padding: 20px;
+            background-color: rgba(221, 221, 221, 0.7);
+            border-radius: 10px;
+            margin: 20px;
+        }
+
+        .weather-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 5px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   
+</head>
+
+
+<body >
+
+    <header>
+        <h1>Roman Catholic School</h1>
+    </header>
+
+
+    <div class="box">
+    <div id="weather-info" >
+        <h2>Current Weather</h2>
+        <p id="temperature">Loading...</p>
+        <h2>3-Hour Forecast</h2>
+        <ul id="forecast">
+            <li>Loading...</li>
+        </ul>
+    </div>
+</div> 
+
+    <script>
+        const weatherEndpoint = 'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Fetch weather data
+            fetch(weatherEndpoint)
+                .then(response => response.json())
+                .then(data => {
+                    // Update current temperature
+                    const temperatureInfo = document.getElementById('temperature');
+                    const currentTemperature = data.hourly.temperature_2m[0].toFixed(2);
+                    temperatureInfo.innerHTML = `<i class="fas fa-thermometer-half weather-icon"></i> Current temperature: ${currentTemperature}°C`;
+
+                    // Update 3-hour forecast
+                    const forecastInfo = document.getElementById('forecast');
+                    forecastInfo.innerHTML = '';
+                    for (let i = 0; i < 3; i++) {
+                        const forecastTemperature = data.hourly.temperature_2m[i].toFixed(2);
+                        const forecastTime = data.hourly.time[i].substring(11, 16);
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `<i class="fas fa-clock weather-icon"></i> ${forecastTime}: ${forecastTemperature}°C`;
+                        forecastInfo.appendChild(listItem);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                    const temperatureInfo = document.getElementById('temperature');
+                    temperatureInfo.textContent = 'Unable to fetch weather data';
+                });
+        });
+    </script>
+
+</body>
+
+</html>
